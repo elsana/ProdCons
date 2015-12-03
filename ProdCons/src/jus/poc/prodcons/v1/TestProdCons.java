@@ -1,36 +1,43 @@
 package jus.poc.prodcons.v1;
-import jus.poc.prodcons.*;
 
+import java.io.IOException;
+import java.util.InvalidPropertiesFormatException;
+import java.util.Map;
+import java.util.Properties;
 
-public class TestProdCons extends Simulateur{
+import jus.poc.prodcons.Observateur;
+import jus.poc.prodcons.Simulateur;
 
-	//protected <type> option;
+public class TestProdCons extends Simulateur {
 	
-	public TestProdCons(Observateur observateur){super(observateur);}
-	protected void run() throws Exception{
-	 // le corps de votre programme principal
+	int nbprod = ;
+	
+
+	public TestProdCons(Observateur observateur) {
+		super(observateur);
 	}
-	public static void main(String[] args){new TestProdCons(new Observateur()).start();}
-	
 
-	
-	/**
-	* Retreave the parameters of the application.
-	* @param file the final name of the file containing the options.
-	*/
-	protected static void init(String file) {
-	// retreave the parameters of the application
-	final class Properties extends java.util.Properties {
-		private static final long serialVersionUID = 1L;
-		public int get(String key){return Integer.parseInt(getProperty(key));}
-		public Properties(String file) {
-			try{
-				loadFromXML(ClassLoader.getSystemResourceAsStream(file));
-			}catch(Exception e){e.printStackTrace();}
+	@Override
+	protected void run() throws Exception {
+		// le corps de votre programme principal
+	}
+
+	public static void main(String[] args) {
+		new TestProdCons(new Observateur()).start();
+	}
+
+	protected void init(String file) throws InvalidPropertiesFormatException,
+			IOException, IllegalArgumentException, IllegalAccessException,
+			NoSuchFieldException, SecurityException {
+		Properties properties = new Properties();
+		properties.loadFromXML(ClassLoader.getSystemResourceAsStream(file));
+		String key;
+		int value;
+		Class<?> thisOne = getClass();
+		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+			key = (String) entry.getKey();
+			value = Integer.parseInt((String) entry.getValue());
+			thisOne.getDeclaredField(key).set(this, value);
 		}
-	}
-	Properties option = new Properties("jus/poc/prodcons/options/"+file);
-	//<option> = option.getProperty("option");
-	//TODO Traiter les donnees recuperees
 	}
 }
