@@ -7,17 +7,19 @@ import jus.poc.prodcons._Producteur;
 
 public class ProdCons implements Tampon {
 
-	// Tampon tamp = new Tampon();
 	int in = 0;
 	int out = 0;
 	int nbplein = 0;
 
-	Message[] buffer = new Message[taille()];
+	Message[] buffer = null;
+
+	public ProdCons(int Taille) {
+		buffer = new Message[Taille];
+	}
 
 	@Override
-	public int enAttente() {
-		// TODO Auto-generated method stub
-		return 0;
+	public synchronized int enAttente() {
+		return nbplein;
 	}
 
 	@Override
@@ -47,8 +49,7 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public int taille() {
-		// TODO Set value
-		return 0;
+		return buffer.length;
 	}
 
 }

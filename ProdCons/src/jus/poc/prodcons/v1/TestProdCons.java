@@ -29,21 +29,39 @@ public class TestProdCons extends Simulateur {
 	@Override
 	protected void run() throws Exception {
 		// Corps du programme principal
-		this.init("plop.xml");// On lit un xml
+		this.init("jus/poc/prodcons/options/v1.xml");// On lit un xml
+		ProdCons pc = new ProdCons(nbBuffer);
 		Producteur[] prods = new Producteur[nbProd];// Tableau des producteurs
 		Consommateur[] cons = new Consommateur[nbCons];// Tableau des
 														// consommateurs
-		for (int i = 0; i < cons.length; i++) {
-			cons[i] = new Consommateur(2, observateur, tempsMoyenConsommation,
-					deviationTempsMoyenConsommation); // Creation Cons
-			cons[i].start();
-		}
-
+		/* On crée les producteurs */
+		System.out.println("Je crée les producteurs");
+		System.out.println("Nombre: " + nbProd);
 		for (int i = 0; i < prods.length; i++) {
 			prods[i] = new Producteur(1, observateur, tempsMoyenProduction,
-					deviationTempsMoyenProduction);// Creation prods
+					deviationTempsMoyenProduction, nombreMoyenNbExemplaire,
+					deviationNombreMoyenNbExemplaire, pc);// Creation prods
 			prods[i].start();
 		}
+
+		System.out.println("Je crée les consommateurs");
+		System.out.println("Nombre: " + nbCons);
+		for (int i = 0; i < cons.length; i++) {
+			cons[i] = new Consommateur(2, observateur, tempsMoyenConsommation,
+					deviationTempsMoyenConsommation, pc,
+					nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire); // Creation
+			// Cons
+			cons[i].start();
+		}
+		/* Vérification fin exécution pour terminer appli */
+		for (int i = 0; i < prods.length; i++) {
+			prods[i].join();
+		}
+		do {
+			Thread.sleep(250);
+		} while (pc.enAttente() > 0);
+		System.out.println("Simulation terminée.");
+		System.exit(0);
 	}
 
 	public static void main(String[] args) {
