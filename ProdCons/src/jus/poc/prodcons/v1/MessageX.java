@@ -4,6 +4,6 @@ import jus.poc.prodcons.Message;
 
 public class MessageX implements Message {
 	/*
-	 * Attributs: IdProd NumMessage String message
+	 * Attributs: IdProd NumMessage Stringmessage
 	 */
 }

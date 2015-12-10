@@ -43,6 +43,8 @@ public class Producteur extends Acteur implements _Producteur {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		// getTempsInit();
+		// while(getTemps()-TempsInit<tempMoyenConso) sleep();
 		Message m = new MessageX();
 	}
 }
