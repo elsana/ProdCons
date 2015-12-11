@@ -1,7 +1,8 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>
-Cette configuration ...
+Cette configuration permet de tester que plusieurs messages peuvent être déposés à la suite. Et que par conséquent on peut également
+lire plusieurs messages de suite.
 </comment>
 <entry key="nbProd">2</entry>
 <entry key="nbCons">5</entry>
