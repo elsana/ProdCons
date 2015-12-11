@@ -30,8 +30,11 @@ public class TestProdCons extends Simulateur {
 	protected void run() throws Exception {
 		// Corps du programme principal
 		this.init("jus/poc/prodcons/options/v1.xml");// On lit un xml
+		System.out.println("marque 1");
 		ProdCons pc = new ProdCons(nbBuffer);
+		System.out.println("marque 3");
 		Producteur[] prods = new Producteur[nbProd];// Tableau des producteurs
+		System.out.println("marque 4");
 		Consommateur[] cons = new Consommateur[nbCons];// Tableau des
 														// consommateurs
 		/* On crée les producteurs */
