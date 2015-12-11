@@ -1,5 +1,3 @@
-******************************** README ********************************
-
 #TP Système d'Exploitation : Programmation concurrente
 Réalisé par Antoine REVEL et Elsa NAVARRO.
 
