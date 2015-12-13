@@ -1,6 +1,7 @@
 package jus.poc.prodcons.v4;
 
 import jus.poc.prodcons.Message;
+import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
 import jus.poc.prodcons._Producteur;
@@ -16,12 +17,13 @@ public class ProdCons implements Tampon {
 	Semaphore sProd = null;
 	Semaphore sCons = null;
 
-	public ProdCons(int Taille) {
-		System.out.println("marque 2.1");
+	Observateur observateur = null;
+
+	public ProdCons(int Taille, Observateur obs) {
 		buffer = new Message[Taille];
-		System.out.println("marque 2.2");
-		this.sProd = new Semaphore(1);
-		this.sCons = new Semaphore(1);
+		this.sProd = new Semaphore(Taille);
+		this.sCons = new Semaphore(0);
+		this.observateur = obs;
 	}
 
 	@Override
@@ -38,6 +40,8 @@ public class ProdCons implements Tampon {
 		synchronized (this) {
 			r = buffer[out];
 			out = (out + 1) % taille();
+			nbplein--;
+			observateur.retraitMessage(arg0, r);
 		}
 		this.sProd.reveiller();
 		return r;
@@ -50,6 +54,8 @@ public class ProdCons implements Tampon {
 		synchronized (this) {
 			buffer[in] = arg1;
 			in = (in + 1) % taille();
+			nbplein++;
+			observateur.depotMessage(arg0, arg1);
 		}
 		this.sCons.reveiller();
 	}

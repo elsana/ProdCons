@@ -7,8 +7,8 @@ lire plusieurs messages de suite.
 <entry key="nbProd">2</entry>
 <entry key="nbCons">5</entry>
 <entry key="nbBuffer">10</entry>
-<entry key="tempsMoyenProduction">10</entry>
-<entry key="deviationTempsMoyenProduction">3</entry>
+<entry key="tempsMoyenProduction">6</entry>
+<entry key="deviationTempsMoyenProduction">2</entry>
 <entry key="tempsMoyenConsommation">10</entry>
 <entry key="deviationTempsMoyenConsommation">3</entry>
 <entry key="nombreMoyenDeProduction">5</entry>

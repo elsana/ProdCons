@@ -31,7 +31,7 @@ public class TestProdCons extends Simulateur {
 	protected void run() throws Exception {
 		// Corps du programme principal
 		this.init("jus/poc/prodcons/options/v1.xml");// On lit un xml
-		ProdCons pc = new ProdCons(nbBuffer);
+		ProdCons pc = new ProdCons(nbBuffer, observateur);
 		Producteur[] prods = new Producteur[nbProd];// Tableau des producteurs
 		Consommateur[] cons = new Consommateur[nbCons];// Tableau des
 														// consommateurs
@@ -63,10 +63,11 @@ public class TestProdCons extends Simulateur {
 		do {
 			Thread.sleep(250);
 		} while (pc.enAttente() > 0);
-		if(observateur.coherent()){
+		if (observateur.coherent()) {
 			System.out.println("Simulation terminée avec succès.");
-		}else{
-			System.out.println("Simulation terminée mais programme incohérent.");			
+		} else {
+			System.out
+					.println("Simulation terminée mais programme incohérent.");
 		}
 		System.exit(0);
 	}

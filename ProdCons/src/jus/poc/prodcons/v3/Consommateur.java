@@ -25,35 +25,24 @@ public class Consommateur extends Acteur implements _Consommateur {
 
 	@Override
 	public void run() {
-		int tAlea;
+		int tAlea = new Aleatoire(moyenneTempsDeTraitement,
+				deviationTempsDeTraitement).next();
 		Message m = null;
 		while (nombreDeMessages() > 0) {
 
 			// Msg retiré du tampon
 			try {
 				m = this.pc.get(this);
+				observateur.consommationMessage(this, m, tAlea);
+				System.out.println("Message consommé par " + identification()
+						+ ": " + m);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
-			try {
-				observateur.retraitMessage(this, m);
-				System.out.println("Message consommé par " + identification()
-						+ ": " + m);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 
-			tAlea = new Aleatoire(moyenneTempsDeTraitement,
-					deviationTempsDeTraitement).next();
 			try {
 				Thread.sleep(tAlea);
 			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			// Conso du msg
-			try {
-				observateur.consommationMessage(this, m, tAlea);
-			} catch (ControlException e) {
 				e.printStackTrace();
 			}
 
