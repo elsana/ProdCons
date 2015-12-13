@@ -1,25 +1,26 @@
 #Compte-Rendu TPSE Programmation concurrente
+Realisé par Antoine REVEL et Elsa NAVARRO.
 
 ##Objectif 1
-
-###test1.xml
-Objectif :
-Mise en oeuvre :
-Conclusion :
-
-###test2.xml
-Objectif :
-Mise en oeuvre :
-Conclusion :
-
-###test3.xml
-Objectif :
-Mise en oeuvre :
-Conclusion :
-
-###test4.xml
-Objectif :
-Mise en oeuvre :
-Conclusion :
+Temps passé : 2h
+Difficultés rencontrées et autres commentaires :
 
 ##Objectif 2
+Temps passé : 3h
+Difficultés rencontrées et autres commentaires : 
+
+##Objectif 3
+Temps passé : 2h
+Difficultés rencontrées et autres commentaires : 
+
+##Objectif 4
+Temps passé :
+Difficultés rencontrées et autres commentaires : 
+
+##Objectif 5
+Temps passé :
+Difficultés rencontrées et autres commentaires : 
+
+##Objectif 6
+Temps passé :
+Difficultés rencontrées et autres commentaires : 
