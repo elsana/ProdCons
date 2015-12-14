@@ -18,7 +18,7 @@ public class ProdCons implements Tampon {
 
 	public ProdCons(int Taille) {
 		buffer = new Message[Taille];
-		this.sProd = new Semaphore(Taille);
+		this.sProd = new Semaphore(1);
 		this.sCons = new Semaphore(0);
 	}
 

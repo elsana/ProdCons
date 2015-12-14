@@ -16,6 +16,7 @@ public class ProdCons implements Tampon {
 
 	Semaphore sProd = null;
 	Semaphore sCons = null;
+	Semaphore sExemp = null;
 
 	Observateur observateur = null;
 
@@ -23,6 +24,7 @@ public class ProdCons implements Tampon {
 		buffer = new Message[Taille];
 		this.sProd = new Semaphore(Taille);
 		this.sCons = new Semaphore(0);
+		this.sExemp = new Semaphore(0);
 		this.observateur = obs;
 	}
 
@@ -35,15 +37,20 @@ public class ProdCons implements Tampon {
 	public Message get(_Consommateur arg0) throws Exception,
 			InterruptedException {
 		this.sCons.attendre();
-		Message r; // r ne peut etre déclaré dans le bloc synchronisé et
-					// retourné à la fin, on le déclare donc avant
-		synchronized (this) {
-			r = buffer[out];
-			out = (out + 1) % taille();
-			nbplein--;
-			observateur.retraitMessage(arg0, r);
+		MessageX r = (MessageX) buffer[out]; // r ne peut etre déclaré dans le
+												// bloc synchronisé et
+		// retourné à la fin, on le déclare donc avant
+		// enlever un exemplaire
+		// Si le nb d'exemplaire du msg =0 on exécute le bloc synchronized +
+		// réveil le prod qui a été bloqué
+		if (r.nbExempNul()) {
+			synchronized (this) {
+				out = (out + 1) % taille();
+				nbplein--;
+				observateur.retraitMessage(arg0, r);
+			}
+			this.sProd.reveiller(1);
 		}
-		this.sProd.reveiller();
 		return r;
 	}
 
@@ -57,7 +64,7 @@ public class ProdCons implements Tampon {
 			nbplein++;
 			observateur.depotMessage(arg0, arg1);
 		}
-		this.sCons.reveiller();
+		this.sCons.reveiller(1);
 	}
 
 	@Override

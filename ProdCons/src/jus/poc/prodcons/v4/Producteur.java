@@ -35,8 +35,8 @@ public class Producteur extends Acteur implements _Producteur {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Message m = new MessageX(super.identification(),
-					", je suis le message numéro " + messNum);
+			String contenu = " je suis le message numéro " + messNum;
+			Message m = new MessageX(super.identification(), contenu, nbMess);
 
 			try { // Message déposé dans le tampon
 				this.pc.put(this, m);
