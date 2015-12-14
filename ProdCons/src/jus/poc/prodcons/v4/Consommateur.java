@@ -41,8 +41,9 @@ public class Consommateur extends Acteur implements _Consommateur {
 			try {
 				m = this.pc.get(this);
 				observateur.consommationMessage(this, m, tAlea);
-				LOGGER.info("Message consommé par " + identification() + ": \n"
-						+ m);
+				// LOGGER.info("Message consommé par " + identification() +
+				// ": \n"
+				// + m);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

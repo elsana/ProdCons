@@ -1,10 +1,13 @@
 package jus.poc.prodcons.v4;
 
+import java.util.logging.Logger;
+
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
 import jus.poc.prodcons._Producteur;
+import jus.poc.prodcons.v1.TestProdCons;
 
 public class ProdCons implements Tampon {
 
@@ -19,6 +22,10 @@ public class ProdCons implements Tampon {
 	Semaphore sExemp = null;
 
 	Observateur observateur = null;
+
+	/* Logger utilise pour l'affichage de debug */
+	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
+			.getName());
 
 	public ProdCons(int Taille, Observateur obs) {
 		buffer = new Message[Taille];
@@ -36,20 +43,31 @@ public class ProdCons implements Tampon {
 	@Override
 	public Message get(_Consommateur arg0) throws Exception,
 			InterruptedException {
-		this.sCons.attendre();
-		MessageX r = (MessageX) buffer[out]; // r ne peut etre déclaré dans le
-												// bloc synchronisé et
-		// retourné à la fin, on le déclare donc avant
-		// enlever un exemplaire
-		// Si le nb d'exemplaire du msg =0 on exécute le bloc synchronized +
-		// réveil le prod qui a été bloqué
-		if (r.nbExempNul()) {
-			synchronized (this) {
+
+		// this.sCons.attendre();
+
+		// On vérifie qu'un exemplaire soit disponible
+		this.sExemp.attendre();
+
+		// On récupère le message dans le buffer
+		MessageX r;
+
+		synchronized (this) {
+			r = (MessageX) buffer[out];
+			LOGGER.info("CONSO " + arg0.identification() + " : " + r.toString());
+
+			r.consommeEx(); // enlever un exemplaire
+
+			// Si plus aucun msg on exécute le bloc synchronized +
+			// réveil du prod qui a été bloqué
+			if (r.nbExempNul()) {
 				out = (out + 1) % taille();
 				nbplein--;
 				observateur.retraitMessage(arg0, r);
+				LOGGER.info("DESTRUCTION : " + r.getMess() + " du producteur "
+						+ r.getIdProd() + "\n");
+				this.sProd.reveiller(1);
 			}
-			this.sProd.reveiller(1);
 		}
 		return r;
 	}
@@ -63,8 +81,10 @@ public class ProdCons implements Tampon {
 			in = (in + 1) % taille();
 			nbplein++;
 			observateur.depotMessage(arg0, arg1);
+			LOGGER.info("PROD : " + arg1.toString());
 		}
 		this.sCons.reveiller(1);
+		sExemp.reveiller(((MessageX) arg1).getNbExemp());
 	}
 
 	@Override

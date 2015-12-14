@@ -19,9 +19,9 @@ public class Semaphore {
 		this.residu--;
 	}
 
-	public synchronized void reveiller(int nbE) {// Mettre résidu+n (n=nb
-													// exemplaire)
-		// // messages)
+	public synchronized void reveiller(int nbE) { // Réveille nbE Consommateurs
+													// quand une ressource est
+													// placée
 		this.residu = residu + nbE;
 		notify();
 	}

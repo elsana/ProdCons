@@ -24,9 +24,14 @@ public class MessageX implements Message {
 		return this.mess;
 	}
 
+	public int getNbExemp() {
+		return this.nbExemp;
+	}
+
 	@Override
 	public String toString() {
-		return "Je suis le message de " + idProd + " " + mess + "\n";
+		return "Je suis " + mess + " du producteur " + idProd + " present en "
+				+ nbExemp + " exemplaires\n";
 	}
 
 	public void consommeEx() {

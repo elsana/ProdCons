@@ -13,6 +13,7 @@ import jus.poc.prodcons.v1.TestProdCons;
 public class Producteur extends Acteur implements _Producteur {
 
 	private int nbMess = 0;
+	// private Aleatoire nbExemp;
 	private ProdCons pc;
 
 	/* Logger utilise pour l'affichage de debug */
@@ -25,6 +26,14 @@ public class Producteur extends Acteur implements _Producteur {
 			ProdCons pc) throws ControlException {
 		super(type, observateur, moyenneTempsDeTraitement,
 				deviationTempsDeTraitement);
+
+		/*
+		 * this.nbMess = Aleatoire.valeur(moyenneNbMessages,
+		 * deviationNbMessages); this.nbExemp = new Aleatoire(nbExemplaire,
+		 * deviationNbExemplaire);
+		 */
+
+		// Creation d'un message
 		this.nbMess = new Aleatoire(nombreMoyenNbExemplaire,
 				deviationNombreMoyenNbExemplaire).next();
 		this.pc = pc;
@@ -42,13 +51,14 @@ public class Producteur extends Acteur implements _Producteur {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			String contenu = " je suis le message numéro " + messNum;
+
+			String contenu = "le message numéro " + messNum;
 			Message m = new MessageX(super.identification(), contenu, nbMess);
 
 			try { // Message déposé dans le tampon
 				this.pc.put(this, m);
 				observateur.productionMessage(this, m, tAlea);
-				LOGGER.info(m.toString());
+				// LOGGER.info(m.toString());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
