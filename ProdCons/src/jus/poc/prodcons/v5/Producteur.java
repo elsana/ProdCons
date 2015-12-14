@@ -1,4 +1,4 @@
-package jus.poc.prodcons.v3;
+package jus.poc.prodcons.v5;
 
 import java.util.logging.Logger;
 
@@ -8,7 +8,6 @@ import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Producteur;
-import jus.poc.prodcons.v1.TestProdCons;
 
 public class Producteur extends Acteur implements _Producteur {
 
@@ -44,10 +43,8 @@ public class Producteur extends Acteur implements _Producteur {
 			}
 			Message m = new MessageX(super.identification(),
 					", je suis le message numéro " + messNum);
-
-			try { // Message déposé dans le tampon
+			try {
 				this.pc.put(this, m);
-				observateur.productionMessage(this, m, tAlea);
 				LOGGER.info(m.toString());
 			} catch (InterruptedException e) {
 				e.printStackTrace();

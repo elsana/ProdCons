@@ -1,16 +1,23 @@
 package jus.poc.prodcons.v4;
 
+import java.util.logging.Logger;
+
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Producteur;
+import jus.poc.prodcons.v1.TestProdCons;
 
 public class Producteur extends Acteur implements _Producteur {
 
 	private int nbMess = 0;
 	private ProdCons pc;
+
+	/* Logger utilise pour l'affichage de debug */
+	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
+			.getName());
 
 	protected Producteur(int type, Observateur observateur,
 			int moyenneTempsDeTraitement, int deviationTempsDeTraitement,
@@ -41,7 +48,7 @@ public class Producteur extends Acteur implements _Producteur {
 			try { // Message déposé dans le tampon
 				this.pc.put(this, m);
 				observateur.productionMessage(this, m, tAlea);
-				System.out.println(m);
+				LOGGER.info(m.toString());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (Exception e) {

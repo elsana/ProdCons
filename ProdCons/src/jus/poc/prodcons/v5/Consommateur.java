@@ -1,4 +1,4 @@
-package jus.poc.prodcons.v4;
+package jus.poc.prodcons.v5;
 
 import java.util.logging.Logger;
 
@@ -8,7 +8,6 @@ import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Consommateur;
-import jus.poc.prodcons.v1.TestProdCons;
 
 public class Consommateur extends Acteur implements _Consommateur {
 
@@ -32,27 +31,28 @@ public class Consommateur extends Acteur implements _Consommateur {
 
 	@Override
 	public void run() {
-		int tAlea = new Aleatoire(moyenneTempsDeTraitement,
-				deviationTempsDeTraitement).next();
+		int tAlea;
 		Message m = null;
 		while (nombreDeMessages() > 0) {
-
-			// Msg retiré du tampon
 			try {
 				m = this.pc.get(this);
-				observateur.consommationMessage(this, m, tAlea);
 				LOGGER.info("Message consommé par " + identification() + ": \n"
 						+ m);
-			} catch (Exception e1) {
-				e1.printStackTrace();
+			} catch (InterruptedException e) {
+
+				e.printStackTrace();
+			} catch (Exception e) {
+
+				e.printStackTrace();
 			}
 
+			tAlea = new Aleatoire(moyenneTempsDeTraitement,
+					deviationTempsDeTraitement).next();
 			try {
 				Thread.sleep(tAlea);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 			this.nbMess--;
 		}
 	}

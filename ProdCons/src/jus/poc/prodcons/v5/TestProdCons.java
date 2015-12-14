@@ -1,4 +1,4 @@
-package jus.poc.prodcons.v3;
+package jus.poc.prodcons.v5;
 
 import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Simulateur;
 
@@ -36,7 +35,7 @@ public class TestProdCons extends Simulateur {
 	protected void run() throws Exception {
 		// Corps du programme principal
 		this.init("jus/poc/prodcons/options/v1.xml");// On lit un xml
-		ProdCons pc = new ProdCons(nbBuffer, observateur);
+		ProdCons pc = new ProdCons(nbBuffer);
 		Producteur[] prods = new Producteur[nbProd];// Tableau des producteurs
 		Consommateur[] cons = new Consommateur[nbCons];// Tableau des
 														// consommateurs
@@ -48,18 +47,17 @@ public class TestProdCons extends Simulateur {
 			prods[i] = new Producteur(1, observateur, tempsMoyenProduction,
 					deviationTempsMoyenProduction, nombreMoyenNbExemplaire,
 					deviationNombreMoyenNbExemplaire, pc);// Creation prods
-			observateur.newProducteur(prods[i]);
 			prods[i].start();
 		}
 
 		LOGGER.info("Je crée les consommateurs");
 		LOGGER.info("Nombre: " + nbCons);
+
 		for (int i = 0; i < cons.length; i++) {
 			cons[i] = new Consommateur(2, observateur, tempsMoyenConsommation,
 					deviationTempsMoyenConsommation, pc,
 					nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire); // Creation
 			// Cons
-			observateur.newConsommateur(cons[i]);
 			cons[i].start();
 		}
 		/* Vérification fin exécution pour terminer appli */
@@ -69,11 +67,7 @@ public class TestProdCons extends Simulateur {
 		do {
 			Thread.sleep(250);
 		} while (pc.enAttente() > 0);
-		if (observateur.coherent()) {
-			LOGGER.info("Simulation terminée avec succès.");
-		} else {
-			LOGGER.info("Simulation terminée mais programme incohérent.");
-		}
+		LOGGER.info("Simulation terminée.");
 		System.exit(0);
 	}
 
@@ -83,7 +77,7 @@ public class TestProdCons extends Simulateur {
 
 	protected void init(String file) throws InvalidPropertiesFormatException,
 			IOException, IllegalArgumentException, IllegalAccessException,
-			NoSuchFieldException, SecurityException, ControlException {
+			NoSuchFieldException, SecurityException {
 		Properties properties = new Properties();
 		properties.loadFromXML(ClassLoader.getSystemResourceAsStream(file));
 		String key;
@@ -94,7 +88,5 @@ public class TestProdCons extends Simulateur {
 			value = Integer.parseInt((String) entry.getValue());
 			thisOne.getDeclaredField(key).set(this, value);
 		}
-
-		this.observateur.init(nbProd, nbCons, nbBuffer);
 	}
 }

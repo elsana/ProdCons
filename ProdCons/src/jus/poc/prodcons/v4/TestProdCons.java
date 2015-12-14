@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
@@ -23,6 +24,10 @@ public class TestProdCons extends Simulateur {
 	int nombreMoyenNbExemplaire;
 	int deviationNombreMoyenNbExemplaire;
 
+	/* Logger utilise pour l'affichage de debug */
+	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
+			.getName());
+
 	public TestProdCons(Observateur observateur) {
 		super(observateur);
 	}
@@ -36,8 +41,8 @@ public class TestProdCons extends Simulateur {
 		Consommateur[] cons = new Consommateur[nbCons];// Tableau des
 														// consommateurs
 		/* On crée les producteurs */
-		System.out.println("Je crée les producteurs");
-		System.out.println("Nombre: " + nbProd);
+		LOGGER.info("Je crée les producteurs");
+		LOGGER.info("Nombre: " + nbProd);
 		for (int i = 0; i < prods.length; i++) {
 			prods[i] = new Producteur(1, observateur, tempsMoyenProduction,
 					deviationTempsMoyenProduction, nombreMoyenNbExemplaire,
@@ -46,8 +51,8 @@ public class TestProdCons extends Simulateur {
 			prods[i].start();
 		}
 
-		System.out.println("Je crée les consommateurs");
-		System.out.println("Nombre: " + nbCons);
+		LOGGER.info("Je crée les consommateurs");
+		LOGGER.info("Nombre: " + nbCons);
 		for (int i = 0; i < cons.length; i++) {
 			cons[i] = new Consommateur(2, observateur, tempsMoyenConsommation,
 					deviationTempsMoyenConsommation, pc,
@@ -64,10 +69,9 @@ public class TestProdCons extends Simulateur {
 			Thread.sleep(250);
 		} while (pc.enAttente() > 0);
 		if (observateur.coherent()) {
-			System.out.println("Simulation terminée avec succès.");
+			LOGGER.info("Simulation terminée avec succès.");
 		} else {
-			System.out
-					.println("Simulation terminée mais programme incohérent.");
+			LOGGER.info("Simulation terminée mais programme incohérent.");
 		}
 		System.exit(0);
 	}

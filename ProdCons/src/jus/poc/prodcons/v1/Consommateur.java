@@ -1,5 +1,7 @@
 package jus.poc.prodcons.v1;
 
+import java.util.logging.Logger;
+
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
@@ -11,6 +13,10 @@ public class Consommateur extends Acteur implements _Consommateur {
 
 	private int nbMess = 0;
 	private ProdCons pc;
+
+	/* Logger utilise pour l'affichage de debug */
+	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
+			.getName());
 
 	protected Consommateur(int type, Observateur observateur,
 			int moyenneTempsDeTraitement, int deviationTempsDeTraitement,
@@ -30,8 +36,8 @@ public class Consommateur extends Acteur implements _Consommateur {
 		while (nombreDeMessages() > 0) {
 			try {
 				m = this.pc.get(this);
-				System.out.println("Message consommé par " + identification()
-						+ ": " + m);
+				LOGGER.info("Message consommé par " + identification() + ": \n"
+						+ m);
 			} catch (InterruptedException e) {
 
 				e.printStackTrace();
