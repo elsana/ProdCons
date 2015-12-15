@@ -42,7 +42,7 @@ Le mot-clé CONSO est suivit d'un entier qui indique quel est le consommateur qu
 
 Le mot-clé DESTRUCTION apparaît après la dernière consommation d'un message. Ceci s'affiche uniquement lorsque les messages sont créés en plusieurs exemplaires, sinon une consommation correspond à une destruction.
 
-####Terminaison
+###Terminaison
 
 Lorsque la simulation termine sans échec, le message suivant clôt le suivit du déroulement. A partir de la version 3, on vérifie également que l'observateur retourne coherent lorsqu'on l'informe des opérations effectuées.
 
@@ -51,6 +51,7 @@ Lorsque la simulation termine sans échec, le message suivant clôt le suivit du
 ```
 
 ##Objectifs généraux //Pertinent? a replacer?
+
 processus commutant de façon régulière -> vraie concurrence
 
 Le comportement général de l'application devra vérifier certaines propriétés, pour caractériser ceci nous définissons les informations suivantes :
@@ -83,7 +84,7 @@ Les différentes lois temporelles sont vérifiées.
 ##Objectif 1 (v1)
 Temps passé : 4h
 
-Dans cette partie, nous avons implémenté une solution naïve au problème de producteurs consommateurs, au moyen du système de garde/action.
+Dans cette partie, nous avons implémenté une solution naïve au problème de producteurs consommateurs, au moyen du système de garde/action et des appels aux méthodes wait() et notify()
 
 
 
@@ -92,12 +93,15 @@ Dans cette partie, nous avons implémenté une solution naïve au problème de p
 
 ##Objectif 2 (v2)
 Temps passé : 3h
+
+Mise en place de sémaphores : creation d'une nouvelle classe Sémaphore. Cette version vise à optimiser la version 1 en considérant séparément les producteurs et les consommateurs. Ainsi, on peut réveiller uniqueent les producteurs lorsque c'est nécessaire et de même pour les consommateurs.
  
 ###Tests :
 
 
 ##Objectif 3 (v3)
 Temps passé : 4h
+
 
 ###Tests :
 
