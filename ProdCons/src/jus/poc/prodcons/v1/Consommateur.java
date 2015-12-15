@@ -18,11 +18,11 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
 			.getName());
 
-	protected Consommateur(int type, Observateur observateur,
+	protected Consommateur(Observateur observateur,
 			int moyenneTempsDeTraitement, int deviationTempsDeTraitement,
 			ProdCons pc, int nombreMoyenNbExemplaire,
 			int deviationNombreMoyenNbExemplaire) throws ControlException {
-		super(type, observateur, moyenneTempsDeTraitement,
+		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement,
 				deviationTempsDeTraitement);
 		this.nbMess = Aleatoire.valeur(nombreMoyenNbExemplaire,
 				deviationNombreMoyenNbExemplaire);
