@@ -13,7 +13,7 @@ import jus.poc.prodcons.Simulateur;
 
 public class TestProdCons extends Simulateur {
 
-	static String fichierTest;
+	static String fichierTest = "v1_1.xml";
 
 	int nbProd;
 	int nbCons;
@@ -94,8 +94,8 @@ public class TestProdCons extends Simulateur {
 			if (args[1].equals("-Ddebug=0")) {
 				LogManager.getLogManager().reset();
 			}
+			fichierTest = args[0];
 		}
-		fichierTest = args[0];
 		new TestProdCons(new Observateur()).start();
 	}
 
