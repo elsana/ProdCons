@@ -13,6 +13,8 @@ import jus.poc.prodcons.Simulateur;
 
 public class TestProdCons extends Simulateur {
 
+	static String fichierTest;
+
 	int nbProd;
 	int nbCons;
 	int nbBuffer;
@@ -45,7 +47,7 @@ public class TestProdCons extends Simulateur {
 	@Override
 	protected void run() throws Exception {
 		// Corps du programme principal
-		this.init("jus/poc/prodcons/options/v1.xml");// On lit un xml
+		this.init("jus/poc/prodcons/options/" + fichierTest);// On lit un xml
 		ProdCons pc = new ProdCons(nbBuffer, observateur);
 		Producteur[] prods = new Producteur[nbProd];// Tableau des producteurs
 		Consommateur[] cons = new Consommateur[nbCons];// Tableau des
@@ -88,10 +90,11 @@ public class TestProdCons extends Simulateur {
 
 	public static void main(String[] args) {
 		if (args.length > 0) {
-			if (args[0].equals("-Ddebug=0")) {
+			if (args[1].equals("-Ddebug=0")) {
 				LogManager.getLogManager().reset();
 			}
 		}
+		fichierTest = args[0];
 		new TestProdCons(new Observateur()).start();
 	}
 

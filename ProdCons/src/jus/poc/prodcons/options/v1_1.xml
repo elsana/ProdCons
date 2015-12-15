@@ -1,0 +1,17 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>
+Cette configuration permet de tester que les consommations se font bien l'une à la suite des autres. Le temps de production étant bien supérieur au temps de consommations, les consommateurs sont obligés d'attendre la creation d'un nouveau message pour pouvoir consommer.
+</comment>
+<entry key="nbProd">1</entry>
+<entry key="nbCons">5</entry>
+<entry key="nbBuffer">1</entry>
+<entry key="tempsMoyenProduction">15</entry>
+<entry key="deviationTempsMoyenProduction">4</entry>
+<entry key="tempsMoyenConsommation">5</entry>
+<entry key="deviationTempsMoyenConsommation">2</entry>
+<entry key="nombreMoyenDeProduction">5</entry>
+<entry key="deviationNombreMoyenDeProduction">2</entry>
+<entry key="nombreMoyenNbExemplaire">30</entry>
+<entry key="deviationNombreMoyenNbExemplaire">3</entry>
+</properties>
