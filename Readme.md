@@ -44,16 +44,48 @@ Le mot-clé DESTRUCTION apparaît après la dernière consommation d'un message.
 
 ####Terminaison
 
-Lorsque la simulation termine sans échec, le message suivant clôt le suivit du déroulement :
+Lorsque la simulation termine sans échec, le message suivant clôt le suivit du déroulement. A partir de la version 3, on vérifie également que l'observateur retourne coherent lorsqu'on l'informe des opérations effectuées.
 
 ```
 [INFOS]: {jus.poc.prodcons.v4.TestProdCons run} Simulation terminée avec succès.
 ```
 
+##Objectifs généraux //Pertinent? a replacer?
+processus commutant de façon régulière -> vraie concurrence
+
+Le comportement général de l'application devra vérifier certaines propriétés, pour caractériser ceci nous définissons les informations suivantes :
+
+TS(x) : la date unique où a lieu l’opération x
+
+deposer, retirer : les opérations de dépôt et de retrait du tampon.
+
+produire, consommer : les opérations effectuées par les acteurs
+
+Message t : l’ensemble des messages émis jusqu’au temps t, en absence de t c’est le temps courant
+
+t arret : la date d’arrêt du programme
+
+
+Les règles minimales sont :
+
+les messages sont retirés du tampon dans l'ordre où ils ont été déposés:
+M1, M2 messages, TS ( deposer ( M1 )) < TS ( deposer ( M2 )) => TS ( retirer ( M1 )) < TS ( retirer ( M2 ))
+
+l'application ne se termine que lorsque tous les producteurs ont effectués leurs productions et que tous les messages produits ont été consommés et traités par des consommateurs.
+Pour tout M1 Message, TS ( deposer ( M1 )) = t1 => TS ( retirer ( M1 )) = t 2 & t 2 > t 1
+il n'existe pas M1 Messsage(tarret) tel que TS ( consommer ( M 1 )) > t arret
+
+
+Les différentes lois temporelles sont vérifiées.
+
+
+
 ##Objectif 1 (v1)
 Temps passé : 4h
 
 Dans cette partie, nous avons implémenté une solution naïve au problème de producteurs consommateurs, au moyen du système de garde/action.
+
+
 
 ###Tests :
 
