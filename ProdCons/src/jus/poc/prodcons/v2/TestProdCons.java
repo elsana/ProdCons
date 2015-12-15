@@ -78,7 +78,7 @@ public class TestProdCons extends Simulateur {
 				prods[i].join();
 			}
 			do {
-				Thread.sleep(250);
+				Thread.yield();
 			} while (pc.enAttente() > 0);
 			LOGGER.info("Simulation terminée.");
 		} else {

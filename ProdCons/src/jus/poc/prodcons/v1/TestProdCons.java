@@ -39,10 +39,16 @@ public class TestProdCons extends Simulateur {
 	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
 			.getName());
 
+	/**
+	 * @param observateur
+	 *            L'observateur de la classe.
+	 * */
 	public TestProdCons(Observateur observateur) {
 		super(observateur);
 	}
 
+	/**
+	 * */
 	@Override
 	protected void run() throws Exception {
 		// Corps du programme principal
@@ -73,12 +79,15 @@ public class TestProdCons extends Simulateur {
 				// Cons
 				cons[i].start();
 			}
-			/* Vérification fin exécution pour terminer appli */
+			/*
+			 * Vérification fin exécution pour terminer appli On attend que les
+			 * producteurs est tous términé de poser leurs messages.
+			 */
 			for (int i = 0; i < prods.length; i++) {
 				prods[i].join();
 			}
 			do {
-				Thread.sleep(250);
+				Thread.yield();
 			} while (pc.enAttente() > 0);
 			LOGGER.info("Simulation terminée.");
 		} else {
