@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Simulateur;
 
@@ -23,6 +25,15 @@ public class TestProdCons extends Simulateur {
 	int nombreMoyenNbExemplaire;
 	int deviationNombreMoyenNbExemplaire;
 
+	static {
+		/*
+		 * System.setProperty("java.util.logging.SimpleFormatter.format",
+		 * "[\u001b[34m%4$s\u001B[0m]: {%2$s} %5$s%6$s%n");
+		 */
+		System.setProperty("java.util.logging.SimpleFormatter.format",
+				"{%2$s} %5$s%6$s%n");
+	}
+
 	/* Logger utilise pour l'affichage de debug */
 	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
 			.getName());
@@ -35,7 +46,7 @@ public class TestProdCons extends Simulateur {
 	protected void run() throws Exception {
 		// Corps du programme principal
 		this.init("jus/poc/prodcons/options/v1.xml");// On lit un xml
-		ProdCons pc = new ProdCons(nbBuffer);
+		ProdCons pc = new ProdCons(nbBuffer, observateur);
 		Producteur[] prods = new Producteur[nbProd];// Tableau des producteurs
 		Consommateur[] cons = new Consommateur[nbCons];// Tableau des
 														// consommateurs
@@ -45,19 +56,19 @@ public class TestProdCons extends Simulateur {
 
 		for (int i = 0; i < prods.length; i++) {
 			prods[i] = new Producteur(observateur, tempsMoyenProduction,
-					deviationTempsMoyenProduction, nombreMoyenNbExemplaire,
-					deviationNombreMoyenNbExemplaire, pc);// Creation prods
+					deviationTempsMoyenProduction, nombreMoyenDeProduction,
+					deviationNombreMoyenDeProduction, pc);// Creation prods
+			observateur.newProducteur(prods[i]);
 			prods[i].start();
 		}
 
 		LOGGER.info("Je crée les consommateurs");
 		LOGGER.info("Nombre: " + nbCons);
-
 		for (int i = 0; i < cons.length; i++) {
 			cons[i] = new Consommateur(observateur, tempsMoyenConsommation,
-					deviationTempsMoyenConsommation, pc,
-					nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire); // Creation
+					deviationTempsMoyenConsommation, pc); // Creation
 			// Cons
+			observateur.newConsommateur(cons[i]);
 			cons[i].start();
 		}
 		/* Vérification fin exécution pour terminer appli */
@@ -67,17 +78,26 @@ public class TestProdCons extends Simulateur {
 		do {
 			Thread.sleep(250);
 		} while (pc.enAttente() > 0);
-		LOGGER.info("Simulation terminée.");
+		if (observateur.coherent()) {
+			LOGGER.info("Simulation terminée avec succès.");
+		} else {
+			LOGGER.info("Simulation terminée mais programme incohérent.");
+		}
 		System.exit(0);
 	}
 
 	public static void main(String[] args) {
+		if (args.length > 0) {
+			if (args[0].equals("-Ddebug=0")) {
+				LogManager.getLogManager().reset();
+			}
+		}
 		new TestProdCons(new Observateur()).start();
 	}
 
 	protected void init(String file) throws InvalidPropertiesFormatException,
 			IOException, IllegalArgumentException, IllegalAccessException,
-			NoSuchFieldException, SecurityException {
+			NoSuchFieldException, SecurityException, ControlException {
 		Properties properties = new Properties();
 		properties.loadFromXML(ClassLoader.getSystemResourceAsStream(file));
 		String key;
@@ -88,5 +108,7 @@ public class TestProdCons extends Simulateur {
 			value = Integer.parseInt((String) entry.getValue());
 			thisOne.getDeclaredField(key).set(this, value);
 		}
+
+		this.observateur.init(nbProd, nbCons, nbBuffer);
 	}
 }
