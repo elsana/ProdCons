@@ -45,7 +45,7 @@ public class TestProdCons extends Simulateur {
 		LOGGER.info("Nombre: " + nbProd);
 
 		for (int i = 0; i < prods.length; i++) {
-			prods[i] = new Producteur(1, observateur, tempsMoyenProduction,
+			prods[i] = new Producteur(observateur, tempsMoyenProduction,
 					deviationTempsMoyenProduction, nombreMoyenNbExemplaire,
 					deviationNombreMoyenNbExemplaire, pc);// Creation prods
 			observateur.newProducteur(prods[i]);
@@ -55,9 +55,8 @@ public class TestProdCons extends Simulateur {
 		LOGGER.info("Je crée les consommateurs");
 		LOGGER.info("Nombre: " + nbCons);
 		for (int i = 0; i < cons.length; i++) {
-			cons[i] = new Consommateur(2, observateur, tempsMoyenConsommation,
-					deviationTempsMoyenConsommation, pc,
-					nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire); // Creation
+			cons[i] = new Consommateur(observateur, tempsMoyenConsommation,
+					deviationTempsMoyenConsommation, pc); // Creation
 			// Cons
 			observateur.newConsommateur(cons[i]);
 			cons[i].start();

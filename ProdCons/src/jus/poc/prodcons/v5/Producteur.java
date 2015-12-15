@@ -18,11 +18,11 @@ public class Producteur extends Acteur implements _Producteur {
 	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
 			.getName());
 
-	protected Producteur(int type, Observateur observateur,
-			int moyenneTempsDeTraitement, int deviationTempsDeTraitement,
-			int nombreMoyenNbExemplaire, int deviationNombreMoyenNbExemplaire,
-			ProdCons pc) throws ControlException {
-		super(type, observateur, moyenneTempsDeTraitement,
+	protected Producteur(Observateur observateur, int moyenneTempsDeTraitement,
+			int deviationTempsDeTraitement, int nombreMoyenNbExemplaire,
+			int deviationNombreMoyenNbExemplaire, ProdCons pc)
+			throws ControlException {
+		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement,
 				deviationTempsDeTraitement);
 		this.nbMess = new Aleatoire(nombreMoyenNbExemplaire,
 				deviationNombreMoyenNbExemplaire).next();

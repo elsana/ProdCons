@@ -1,5 +1,7 @@
 package jus.poc.prodcons.v2;
 
+import java.util.logging.Logger;
+
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
@@ -9,17 +11,18 @@ import jus.poc.prodcons._Consommateur;
 
 public class Consommateur extends Acteur implements _Consommateur {
 
-	private int nbMess = 0;
+	private int nbMessConso = 0;
 	private ProdCons pc;
 
-	protected Consommateur(int type, Observateur observateur,
+	/* Logger utilise pour l'affichage de debug */
+	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
+			.getName());
+
+	protected Consommateur(Observateur observateur,
 			int moyenneTempsDeTraitement, int deviationTempsDeTraitement,
-			ProdCons pc, int nombreMoyenNbExemplaire,
-			int deviationNombreMoyenNbExemplaire) throws ControlException {
-		super(type, observateur, moyenneTempsDeTraitement,
+			ProdCons pc) throws ControlException {
+		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement,
 				deviationTempsDeTraitement);
-		this.nbMess = Aleatoire.valeur(nombreMoyenNbExemplaire,
-				deviationNombreMoyenNbExemplaire);
 		this.pc = pc;
 	}
 
@@ -27,9 +30,10 @@ public class Consommateur extends Acteur implements _Consommateur {
 	public void run() {
 		int tAlea;
 		Message m;
-		while (nombreDeMessages() > 0) {
+		while (true) {
 			try {
 				m = this.pc.get(this);
+				this.nbMessConso++;
 			} catch (InterruptedException e) {
 
 				e.printStackTrace();
@@ -50,7 +54,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 
 	@Override
 	public int nombreDeMessages() {
-		return this.nbMess;
+		return this.nbMessConso;
 	}
 
 }

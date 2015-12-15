@@ -1,5 +1,7 @@
 package jus.poc.prodcons.v4;
 
+import java.util.logging.Logger;
+
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
@@ -13,11 +15,15 @@ public class Producteur extends Acteur implements _Producteur {
 	// private Aleatoire nbExemp;
 	private ProdCons pc;
 
-	protected Producteur(int type, Observateur observateur,
-			int moyenneTempsDeTraitement, int deviationTempsDeTraitement,
-			int nombreMoyenNbExemplaire, int deviationNombreMoyenNbExemplaire,
-			ProdCons pc) throws ControlException {
-		super(type, observateur, moyenneTempsDeTraitement,
+	/* Logger utilise pour l'affichage de debug */
+	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
+			.getName());
+
+	protected Producteur(Observateur observateur, int moyenneTempsDeTraitement,
+			int deviationTempsDeTraitement, int nombreMoyenNbExemplaire,
+			int deviationNombreMoyenNbExemplaire, ProdCons pc)
+			throws ControlException {
+		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement,
 				deviationTempsDeTraitement);
 
 		/*
