@@ -10,11 +10,11 @@ consommateurs avec tampon intermédiaire borné, réalisé en binôme dans le ca
 
 L'exécution du programme demande en paramètre un fichier de test au format xml se trouvant dans le dossier jus.poc.prodcons.options, et une option -DEBUG=1 permet d'afficher le déroulement de l'exxécution lors du test, -DEBUG=0 désactive cette option.
 
-'''
+```
 java -classpath ProdCons.jar:$CLASSPATH TestProdCons "test.xml" -DEBUG=1
 
 java -classpath ProdCons.jar:$CLASSPATH TestProdCons "test.xml" -DEBUG=0
-'''
+```
 
 ###Contenu du fichier test.xml
 
@@ -26,7 +26,7 @@ Les temps de production et de consommation sont différents pour chaque message,
 
 Exemple : extrait de messages obtenus lors d'une exécution.
 
-'''
+```
 [INFOS]: {jus.poc.prodcons.v4.ProdCons put} PROD : Je suis le message numéro 30 du producteur 2 present en 2 exemplaires
 
 [INFOS]: {jus.poc.prodcons.v4.ProdCons get} CONSO 4 : Je suis le message numéro 30 du producteur 2 present en 2 exemplaires
@@ -34,7 +34,7 @@ Exemple : extrait de messages obtenus lors d'une exécution.
 [INFOS]: {jus.poc.prodcons.v4.ProdCons get} CONSO 2 : Je suis le message numéro 30 du producteur 2 present en 1 exemplaires
 
 [INFOS]: {jus.poc.prodcons.v4.ProdCons get} DESTRUCTION : le message numéro 30 du producteur 2
-'''
+```
 
 Le mot-clé PROD suivit de l'identification du message (détaillant son numéro, son producteur et le nombre d'exemplaires lorsque c'est nécessaire) indique qu'un producteeur vient de déposer un message.
 
@@ -46,9 +46,9 @@ Le mot-clé DESTRUCTION apparaît après la dernière consommation d'un message.
 
 Lorsque la simulation termine sans échec, le message suivant clôt le suivit du déroulement :
 
-'''
+```
 [INFOS]: {jus.poc.prodcons.v4.TestProdCons run} Simulation terminée avec succès.
-'''
+```
 
 ##Objectif 1 (v1)
 Temps passé : 4h
