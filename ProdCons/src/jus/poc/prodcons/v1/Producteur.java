@@ -34,10 +34,13 @@ public class Producteur extends Acteur implements _Producteur {
 	 *            Le ProdCons utilisé pour poser les messages.
 	 */
 	protected Producteur(Observateur observateur, int moyenneTempsDeTraitement,
-			int deviationTempsDeTraitement, ProdCons pc)
+			int deviationTempsDeTraitement, int nombreMoyenDeProduction,
+			int deviationNombreMoyenDeProduction, ProdCons pc)
 			throws ControlException {
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement,
 				deviationTempsDeTraitement);
+		this.nbMess = Aleatoire.valeur(nombreMoyenDeProduction,
+				deviationNombreMoyenDeProduction);
 		this.pc = pc;
 	}
 
