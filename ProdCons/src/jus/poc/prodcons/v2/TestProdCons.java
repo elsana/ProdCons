@@ -45,8 +45,8 @@ public class TestProdCons extends Simulateur {
 
 		for (int i = 0; i < prods.length; i++) {
 			prods[i] = new Producteur(observateur, tempsMoyenProduction,
-					deviationTempsMoyenProduction, nombreMoyenNbExemplaire,
-					deviationNombreMoyenNbExemplaire, pc);// Creation prods
+					deviationTempsMoyenProduction, nombreMoyenDeProduction,
+					deviationNombreMoyenDeProduction, pc);// Creation prods
 			prods[i].start();
 		}
 
@@ -55,8 +55,7 @@ public class TestProdCons extends Simulateur {
 
 		for (int i = 0; i < cons.length; i++) {
 			cons[i] = new Consommateur(observateur, tempsMoyenConsommation,
-					deviationTempsMoyenConsommation, pc,
-					nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire); // Creation
+					deviationTempsMoyenConsommation, pc); // Creation
 			// Cons
 			cons[i].start();
 		}

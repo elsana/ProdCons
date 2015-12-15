@@ -56,8 +56,7 @@ public class TestProdCons extends Simulateur {
 		LOGGER.info("Nombre: " + nbCons);
 		for (int i = 0; i < cons.length; i++) {
 			cons[i] = new Consommateur(observateur, tempsMoyenConsommation,
-					deviationTempsMoyenConsommation, pc,
-					nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire); // Creation
+					deviationTempsMoyenConsommation, pc); // Creation
 			// Cons
 			observateur.newConsommateur(cons[i]);
 			cons[i].start();

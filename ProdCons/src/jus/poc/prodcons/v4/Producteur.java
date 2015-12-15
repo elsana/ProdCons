@@ -57,7 +57,6 @@ public class Producteur extends Acteur implements _Producteur {
 			try { // Message déposé dans le tampon
 				this.pc.put(this, m);
 				observateur.productionMessage(this, m, tAlea);
-				// LOGGER.info(m.toString());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (Exception e) {

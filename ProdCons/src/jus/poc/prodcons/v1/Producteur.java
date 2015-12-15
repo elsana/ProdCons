@@ -42,10 +42,9 @@ public class Producteur extends Acteur implements _Producteur {
 				e.printStackTrace();
 			}
 			Message m = new MessageX(super.identification(),
-					", je suis le message numéro " + messNum);
+					"le message numéro " + messNum);
 			try {
 				this.pc.put(this, m);
-				LOGGER.info(m.toString());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (Exception e) {

@@ -8,11 +8,10 @@ import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Consommateur;
-import jus.poc.prodcons.v1.TestProdCons;
 
 public class Consommateur extends Acteur implements _Consommateur {
 
-	private int nbMess = 0;
+	private int nbMessConso = 0;
 	private ProdCons pc;
 
 	/* Logger utilise pour l'affichage de debug */
@@ -21,12 +20,9 @@ public class Consommateur extends Acteur implements _Consommateur {
 
 	protected Consommateur(Observateur observateur,
 			int moyenneTempsDeTraitement, int deviationTempsDeTraitement,
-			ProdCons pc, int nombreMoyenNbExemplaire,
-			int deviationNombreMoyenNbExemplaire) throws ControlException {
+			ProdCons pc) throws ControlException {
 		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement,
 				deviationTempsDeTraitement);
-		this.nbMess = Aleatoire.valeur(nombreMoyenNbExemplaire,
-				deviationNombreMoyenNbExemplaire);
 		this.pc = pc;
 	}
 
@@ -34,15 +30,14 @@ public class Consommateur extends Acteur implements _Consommateur {
 	public void run() {
 		int tAlea = new Aleatoire(moyenneTempsDeTraitement,
 				deviationTempsDeTraitement).next();
-		Message m = null;
-		while (nombreDeMessages() > 0) {
+		Message m;
+		while (true) {
 
 			// Msg retiré du tampon
 			try {
 				m = this.pc.get(this);
+				this.nbMessConso++;
 				observateur.consommationMessage(this, m, tAlea);
-				LOGGER.info("Message consommé par " + identification() + ": \n"
-						+ m);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -52,14 +47,12 @@ public class Consommateur extends Acteur implements _Consommateur {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			this.nbMess--;
 		}
 	}
 
 	@Override
 	public int nombreDeMessages() {
-		return this.nbMess;
+		return this.nbMessConso;
 	}
 
 }

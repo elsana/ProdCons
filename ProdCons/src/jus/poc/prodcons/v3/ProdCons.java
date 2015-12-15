@@ -1,10 +1,13 @@
 package jus.poc.prodcons.v3;
 
+import java.util.logging.Logger;
+
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
 import jus.poc.prodcons._Producteur;
+import jus.poc.prodcons.v4.TestProdCons;
 
 public class ProdCons implements Tampon {
 
@@ -18,6 +21,10 @@ public class ProdCons implements Tampon {
 	Semaphore sCons = null;
 
 	Observateur observateur = null;
+
+	/* Logger utilise pour l'affichage de debug */
+	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
+			.getName());
 
 	public ProdCons(int Taille, Observateur obs) {
 		buffer = new Message[Taille];
@@ -39,9 +46,12 @@ public class ProdCons implements Tampon {
 					// retourné à la fin, on le déclare donc avant
 		synchronized (this) {
 			r = buffer[out];
+			LOGGER.info("CONSO " + arg0.identification() + " : " + r.toString());
+
 			out = (out + 1) % taille();
 			nbplein--;
 			observateur.retraitMessage(arg0, r);
+
 		}
 		this.sProd.reveiller();
 		return r;
@@ -56,6 +66,7 @@ public class ProdCons implements Tampon {
 			in = (in + 1) % taille();
 			nbplein++;
 			observateur.depotMessage(arg0, arg1);
+			LOGGER.info("PROD : " + arg1.toString());
 		}
 		this.sCons.reveiller();
 	}
