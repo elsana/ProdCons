@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import jus.poc.prodcons.Observateur;
@@ -24,6 +25,15 @@ public class TestProdCons extends Simulateur {
 	int deviationNombreMoyenDeProduction;
 	int nombreMoyenNbExemplaire;
 	int deviationNombreMoyenNbExemplaire;
+
+	static {
+		/*
+		 * System.setProperty("java.util.logging.SimpleFormatter.format",
+		 * "[\u001b[34m%4$s\u001B[0m]: {%2$s} %5$s%6$s%n");
+		 */
+		System.setProperty("java.util.logging.SimpleFormatter.format",
+				"{%2$s} %5$s%6$s%n");
+	}
 
 	/* Logger utilise pour l'affichage de debug */
 	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
@@ -78,6 +88,11 @@ public class TestProdCons extends Simulateur {
 	}
 
 	public static void main(String[] args) {
+		if (args.length > 0) {
+			if (args[1].equals("-Ddebug=0")) {
+				LogManager.getLogManager().reset();
+			}
+		}
 		fichierTest = args[0];
 		new TestProdCons(new Observateur()).start();
 	}
