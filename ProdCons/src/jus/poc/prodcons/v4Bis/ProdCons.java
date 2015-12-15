@@ -1,6 +1,7 @@
-package jus.poc.prodcons.v4;
+package jus.poc.prodcons.v4Bis;
 
-import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Observateur;
@@ -18,20 +19,21 @@ public class ProdCons implements Tampon {
 
 	Semaphore sProd = null;
 	Semaphore sCons = null;
-	Semaphore sExemp = null;
 
 	Observateur observateur = null;
 
-	/* Logger utilise pour l'affichage de debug */
-	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
-			.getName());
+	private Map<Integer, Semaphore> ProdAtt = null;
+
+	private Map<Integer, Integer> ExempRestants = null;
 
 	public ProdCons(int Taille, Observateur obs) {
 		buffer = new Message[Taille];
 		this.sProd = new Semaphore(Taille);
 		this.sCons = new Semaphore(0);
-		this.sExemp = new Semaphore(0);
 		this.observateur = obs;
+
+		this.ProdAtt = new HashMap<Integer, Semaphore>();
+		this.ExempRestants = new HashMap<Integer, Integer>();
 	}
 
 	@Override
@@ -42,33 +44,25 @@ public class ProdCons implements Tampon {
 	@Override
 	public Message get(_Consommateur arg0) throws Exception,
 			InterruptedException {
-
-		// this.sCons.attendre();
-
-		// On vérifie qu'un exemplaire soit disponible
-		this.sExemp.attendre();
-
-		// On récupère le message dans le buffer
-		MessageX r;
-
+		this.sCons.attendre();
+		MessageX r; // r ne peut etre déclaré dans le bloc synchronisé et
+					// retourné à la fin, on le déclare donc avant
 		synchronized (this) {
 			r = (MessageX) buffer[out];
-			LOGGER.info("CONSO " + arg0.identification() + " : " + r.toString());
 
-			r.consommeEx(); // enlever un exemplaire
+			int exRestants = this.ExempRestants.get(r.getIdProd());
+			this.ExempRestants.put(r.getIdProd(), --exRestants);
 
-			// Si plus aucun msg on exécute le bloc synchronized +
-			// réveil du prod qui a été bloqué
-			if (r.nbExempNul()) {
+			if (exRestants == 0) {
 				out = (out + 1) % taille();
 				nbplein--;
-				observateur.retraitMessage(arg0, r);
-				LOGGER.info("DESTRUCTION : " + r.getMess() + " du producteur "
-						+ r.getIdProd() + "\n");
-				this.sProd.reveiller(1);
+
+				ProdAtt.get(r.getIdProd()).reveiller();
+				this.sProd.reveiller();
 			} else {
-				this.sCons.reveiller(1);
+				this.sCons.reveiller();
 			}
+			observateur.retraitMessage(arg0, r);
 		}
 		return r;
 	}
@@ -77,15 +71,24 @@ public class ProdCons implements Tampon {
 	public void put(_Producteur arg0, Message arg1) throws Exception,
 			InterruptedException {
 		this.sProd.attendre();
+
+		MessageX myMessage = ((MessageX) arg1);
+
 		synchronized (this) {
 			buffer[in] = arg1;
 			in = (in + 1) % taille();
 			nbplein++;
+
+			int exRestants = myMessage.getNbEx();
+			this.ExempRestants.put(arg0.identification(), exRestants);
+
 			observateur.depotMessage(arg0, arg1);
-			LOGGER.info("PROD : " + arg1.toString());
 		}
-		this.sExemp.reveiller(((MessageX) arg1).getNbExemp());
-		this.sCons.attendre();
+		this.sCons.reveiller();
+
+		Semaphore mySemaphore = new Semaphore(0);
+		this.ProdAtt.put(myMessage.getIdProd(), mySemaphore);
+		mySemaphore.attendre();
 	}
 
 	@Override

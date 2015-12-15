@@ -24,7 +24,7 @@ public class MessageX implements Message {
 		return this.mess;
 	}
 
-	public int getNbExemp() {
+	public synchronized int getNbExemp() {
 		return this.nbExemp;
 	}
 
@@ -34,12 +34,12 @@ public class MessageX implements Message {
 				+ nbExemp + " exemplaires\n";
 	}
 
-	public void consommeEx() {
+	public synchronized void consommeEx() {
 		nbExemp--;
 	}
 
 	// Verifie que nbExemp est nulle
-	public boolean nbExempNul() {
+	public synchronized boolean nbExempNul() {
 		return (nbExemp == 0);
 	}
 }
