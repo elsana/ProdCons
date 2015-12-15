@@ -12,7 +12,7 @@ import jus.poc.prodcons._Producteur;
 public class Producteur extends Acteur implements _Producteur {
 
 	private int nbMess = 0;
-	// private Aleatoire nbExemp;
+	private Aleatoire nbExemp;
 	private ProdCons pc;
 
 	/* Logger utilise pour l'affichage de debug */
@@ -20,21 +20,18 @@ public class Producteur extends Acteur implements _Producteur {
 			.getName());
 
 	protected Producteur(Observateur observateur, int moyenneTempsDeTraitement,
-			int deviationTempsDeTraitement, int nombreMoyenNbExemplaire,
+			int deviationTempsDeTraitement, int nombreMoyenDeProduction,
+			int deviationNombreMoyenDeProduction, int nombreMoyenNbExemplaire,
 			int deviationNombreMoyenNbExemplaire, ProdCons pc)
 			throws ControlException {
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement,
 				deviationTempsDeTraitement);
 
-		/*
-		 * this.nbMess = Aleatoire.valeur(moyenneNbMessages,
-		 * deviationNbMessages); this.nbExemp = new Aleatoire(nbExemplaire,
-		 * deviationNbExemplaire);
-		 */
+		this.nbMess = Aleatoire.valeur(nombreMoyenDeProduction,
+				deviationNombreMoyenDeProduction);
+		this.nbExemp = new Aleatoire(nombreMoyenNbExemplaire,
+				deviationNombreMoyenNbExemplaire);
 
-		// Creation d'un message
-		this.nbMess = new Aleatoire(nombreMoyenNbExemplaire,
-				deviationNombreMoyenNbExemplaire).next();
 		this.pc = pc;
 	}
 
@@ -52,7 +49,8 @@ public class Producteur extends Acteur implements _Producteur {
 			}
 
 			String contenu = "le message numéro " + messNum;
-			Message m = new MessageX(super.identification(), contenu, nbMess);
+			Message m = new MessageX(super.identification(), contenu,
+					nbExemp.next());
 
 			try { // Message déposé dans le tampon
 				this.pc.put(this, m);
