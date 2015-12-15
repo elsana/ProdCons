@@ -24,6 +24,6 @@ public class MessageX implements Message {
 
 	@Override
 	public String toString() {
-		return "Je suis le message de " + idProd + " " + mess + "\n";
+		return "Je suis " + mess + " du producteur " + idProd + "\n";
 	}
 }
