@@ -1,4 +1,4 @@
-package jus.poc.prodcons.v4Bis;
+package jus.poc.prodcons.v6;
 
 import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
@@ -48,7 +48,7 @@ public class TestProdCons extends Simulateur {
 	protected void run() throws Exception {
 		// Corps du programme principal
 		this.init("jus/poc/prodcons/options/" + fichierTest);// On lit un xml
-		ProdCons pc = new ProdCons(nbBuffer, observateur, nbProd);
+		ProdCons pc = new ProdCons(nbBuffer, observateur);
 		Producteur[] prods = new Producteur[nbProd];// Tableau des producteurs
 		Consommateur[] cons = new Consommateur[nbCons];// Tableau des
 														// consommateurs
@@ -58,8 +58,8 @@ public class TestProdCons extends Simulateur {
 
 		for (int i = 0; i < prods.length; i++) {
 			prods[i] = new Producteur(observateur, tempsMoyenProduction,
-					deviationTempsMoyenProduction, nombreMoyenNbExemplaire,
-					deviationNombreMoyenNbExemplaire, pc);// Creation prods
+					deviationTempsMoyenProduction, nombreMoyenDeProduction,
+					deviationNombreMoyenDeProduction, pc);// Creation prods
 			observateur.newProducteur(prods[i]);
 			prods[i].start();
 		}
@@ -68,8 +68,7 @@ public class TestProdCons extends Simulateur {
 		LOGGER.info("Nombre: " + nbCons);
 		for (int i = 0; i < cons.length; i++) {
 			cons[i] = new Consommateur(observateur, tempsMoyenConsommation,
-					deviationTempsMoyenConsommation, pc,
-					nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire); // Creation
+					deviationTempsMoyenConsommation, pc); // Creation
 			// Cons
 			observateur.newConsommateur(cons[i]);
 			cons[i].start();

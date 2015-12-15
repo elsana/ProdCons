@@ -30,13 +30,13 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public synchronized Message get(_Consommateur arg0) throws Exception,
+	public synchronized Message get(_Consommateur conso) throws Exception,
 			InterruptedException {
 		while (nbplein <= 0) {
 			wait();
 		}
 		Message r = buffer[out];
-		LOGGER.info("CONSO " + arg0.identification() + " : " + r.toString());
+		LOGGER.info("CONSO " + conso.identification() + " : " + r.toString());
 
 		out = (out + 1) % taille();
 		nbplein--;
@@ -45,15 +45,15 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public synchronized void put(_Producteur arg0, Message arg1)
+	public synchronized void put(_Producteur prod, Message mess)
 			throws Exception, InterruptedException {
 		while (nbplein >= taille()) {
 			wait();
 		}
-		buffer[in] = arg1;
+		buffer[in] = mess;
 		in = (in + 1) % taille();
 		nbplein++;
-		LOGGER.info("PROD : " + arg1.toString());
+		LOGGER.info("PROD : " + mess.toString());
 
 		notifyAll();
 	}

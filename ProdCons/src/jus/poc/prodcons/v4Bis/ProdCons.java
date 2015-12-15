@@ -1,8 +1,5 @@
 package jus.poc.prodcons.v4Bis;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Tampon;
@@ -22,18 +19,18 @@ public class ProdCons implements Tampon {
 
 	Observateur observateur = null;
 
-	private Map<Integer, Semaphore> ProdAtt = null;
+	private Semaphore[] tProdAtt = null;
 
-	private Map<Integer, Integer> ExempRestants = null;
-
-	public ProdCons(int Taille, Observateur obs) {
+	public ProdCons(int Taille, Observateur obs, int nbProd) {
 		buffer = new Message[Taille];
 		this.sProd = new Semaphore(Taille);
 		this.sCons = new Semaphore(0);
 		this.observateur = obs;
 
-		this.ProdAtt = new HashMap<Integer, Semaphore>();
-		this.ExempRestants = new HashMap<Integer, Integer>();
+		this.tProdAtt = new Semaphore[nbProd];
+		for (int i = 0; i < tProdAtt.length; i++) {
+			tProdAtt[i] = new Semaphore(0);
+		}
 	}
 
 	@Override
@@ -42,7 +39,7 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public Message get(_Consommateur arg0) throws Exception,
+	public Message get(_Consommateur conso) throws Exception,
 			InterruptedException {
 		this.sCons.attendre();
 		MessageX r; // r ne peut etre déclaré dans le bloc synchronisé et
@@ -50,45 +47,38 @@ public class ProdCons implements Tampon {
 		synchronized (this) {
 			r = (MessageX) buffer[out];
 
-			int exRestants = this.ExempRestants.get(r.getIdProd());
-			this.ExempRestants.put(r.getIdProd(), --exRestants);
+			r.decrementerNbEx();
 
-			if (exRestants == 0) {
+			if (r.getNbEx() == 0) {
 				out = (out + 1) % taille();
 				nbplein--;
 
-				ProdAtt.get(r.getIdProd()).reveiller();
+				tProdAtt[r.getIdProd() - 1].reveiller();
 				this.sProd.reveiller();
 			} else {
 				this.sCons.reveiller();
 			}
-			observateur.retraitMessage(arg0, r);
+			observateur.retraitMessage(conso, r);
 		}
 		return r;
 	}
 
 	@Override
-	public void put(_Producteur arg0, Message arg1) throws Exception,
+	public void put(_Producteur prod, Message mess) throws Exception,
 			InterruptedException {
 		this.sProd.attendre();
 
-		MessageX myMessage = ((MessageX) arg1);
+		MessageX myMessage = ((MessageX) mess);
 
 		synchronized (this) {
-			buffer[in] = arg1;
+			buffer[in] = mess;
 			in = (in + 1) % taille();
 			nbplein++;
 
-			int exRestants = myMessage.getNbEx();
-			this.ExempRestants.put(arg0.identification(), exRestants);
-
-			observateur.depotMessage(arg0, arg1);
+			observateur.depotMessage(prod, mess);
 		}
 		this.sCons.reveiller();
-
-		Semaphore mySemaphore = new Semaphore(0);
-		this.ProdAtt.put(myMessage.getIdProd(), mySemaphore);
-		mySemaphore.attendre();
+		this.tProdAtt[prod.identification() - 1].attendre();
 	}
 
 	@Override

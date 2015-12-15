@@ -1,8 +1,5 @@
-package jus.poc.prodcons.v5;
+package jus.poc.prodcons.v6;
 
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import jus.poc.prodcons.Message;
@@ -10,7 +7,6 @@ import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
 import jus.poc.prodcons._Producteur;
-import jus.poc.prodcons.v4.TestProdCons;
 
 public class ProdCons implements Tampon {
 
@@ -20,10 +16,8 @@ public class ProdCons implements Tampon {
 
 	Message[] buffer = null;
 
-	private final Lock myLock = new ReentrantLock();
-
-	private final Condition bFull = myLock.newCondition();
-	private final Condition bEmpty = myLock.newCondition();
+	Semaphore sProd = null;
+	Semaphore sCons = null;
 
 	Observateur observateur = null;
 
@@ -33,6 +27,8 @@ public class ProdCons implements Tampon {
 
 	public ProdCons(int Taille, Observateur obs) {
 		buffer = new Message[Taille];
+		this.sProd = new Semaphore(Taille);
+		this.sCons = new Semaphore(0);
 		this.observateur = obs;
 	}
 
@@ -44,14 +40,10 @@ public class ProdCons implements Tampon {
 	@Override
 	public Message get(_Consommateur arg0) throws Exception,
 			InterruptedException {
-		this.myLock.lock();
-		try {
-			Message r; // r ne peut etre déclaré dans le bloc synchronisé et
-						// retourné à la fin, on le déclare donc avant
-			while (nbplein <= 0) {
-				this.bEmpty.await();
-			}
-
+		this.sCons.attendre();
+		Message r; // r ne peut etre déclaré dans le bloc synchronisé et
+					// retourné à la fin, on le déclare donc avant
+		synchronized (this) {
 			r = buffer[out];
 			LOGGER.info("CONSO " + arg0.identification() + " : " + r.toString());
 
@@ -59,31 +51,23 @@ public class ProdCons implements Tampon {
 			nbplein--;
 			observateur.retraitMessage(arg0, r);
 
-			this.bFull.signal();
-			return r;
-		} finally {
-			this.myLock.unlock();
 		}
+		this.sProd.reveiller();
+		return r;
 	}
 
 	@Override
 	public void put(_Producteur arg0, Message arg1) throws Exception,
 			InterruptedException {
-		this.myLock.lock();
-		try {
-			while (nbplein >= taille()) {
-				this.bFull.await();
-			}
+		this.sProd.attendre();
+		synchronized (this) {
 			buffer[in] = arg1;
 			in = (in + 1) % taille();
 			nbplein++;
 			observateur.depotMessage(arg0, arg1);
 			LOGGER.info("PROD : " + arg1.toString());
-
-			this.bEmpty.signal();
-		} finally {
-			this.myLock.unlock();
 		}
+		this.sCons.reveiller();
 	}
 
 	@Override

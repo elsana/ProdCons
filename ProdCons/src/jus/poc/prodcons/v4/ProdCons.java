@@ -40,7 +40,7 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public Message get(_Consommateur arg0) throws Exception,
+	public Message get(_Consommateur conso) throws Exception,
 			InterruptedException {
 
 		// this.sCons.attendre();
@@ -53,7 +53,8 @@ public class ProdCons implements Tampon {
 
 		synchronized (this) {
 			r = (MessageX) buffer[out];
-			LOGGER.info("CONSO " + arg0.identification() + " : " + r.toString());
+			LOGGER.info("CONSO " + conso.identification() + " : "
+					+ r.toString());
 
 			r.consommeEx(); // enlever un exemplaire
 
@@ -62,7 +63,7 @@ public class ProdCons implements Tampon {
 			if (r.nbExempNul()) {
 				out = (out + 1) % taille();
 				nbplein--;
-				observateur.retraitMessage(arg0, r);
+				observateur.retraitMessage(conso, r);
 				LOGGER.info("DESTRUCTION : " + r.getMess() + " du producteur "
 						+ r.getIdProd() + "\n");
 				this.sProd.reveiller(1);
@@ -74,17 +75,17 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public void put(_Producteur arg0, Message arg1) throws Exception,
+	public void put(_Producteur prod, Message mess) throws Exception,
 			InterruptedException {
 		this.sProd.attendre();
 		synchronized (this) {
-			buffer[in] = arg1;
+			buffer[in] = mess;
 			in = (in + 1) % taille();
 			nbplein++;
-			observateur.depotMessage(arg0, arg1);
-			LOGGER.info("PROD : " + arg1.toString());
+			observateur.depotMessage(prod, mess);
+			LOGGER.info("PROD : " + mess.toString());
 		}
-		this.sExemp.reveiller(((MessageX) arg1).getNbExemp());
+		this.sExemp.reveiller(((MessageX) mess).getNbExemp());
 		this.sCons.attendre();
 	}
 

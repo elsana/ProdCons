@@ -16,12 +16,16 @@ public class MessageX implements Message {
 		this.NbExemplaire = ex;
 	}
 
-	public int getIdProd() {
+	public synchronized int getIdProd() {
 		return this.idProd;
 	}
 
-	public int getNbEx() {
+	public synchronized int getNbEx() {
 		return this.NbExemplaire;
+	}
+
+	public synchronized void decrementerNbEx() {
+		this.NbExemplaire--;
 	}
 
 	public String getMess() {

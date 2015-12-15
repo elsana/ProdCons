@@ -7,7 +7,6 @@ import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
 import jus.poc.prodcons._Producteur;
-import jus.poc.prodcons.v4.TestProdCons;
 
 public class ProdCons implements Tampon {
 
@@ -39,18 +38,19 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public Message get(_Consommateur arg0) throws Exception,
+	public Message get(_Consommateur conso) throws Exception,
 			InterruptedException {
 		this.sCons.attendre();
 		Message r; // r ne peut etre déclaré dans le bloc synchronisé et
 					// retourné à la fin, on le déclare donc avant
 		synchronized (this) {
 			r = buffer[out];
-			LOGGER.info("CONSO " + arg0.identification() + " : " + r.toString());
+			LOGGER.info("CONSO " + conso.identification() + " : "
+					+ r.toString());
 
 			out = (out + 1) % taille();
 			nbplein--;
-			observateur.retraitMessage(arg0, r);
+			observateur.retraitMessage(conso, r);
 
 		}
 		this.sProd.reveiller();
@@ -58,15 +58,15 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public void put(_Producteur arg0, Message arg1) throws Exception,
+	public void put(_Producteur prod, Message mess) throws Exception,
 			InterruptedException {
 		this.sProd.attendre();
 		synchronized (this) {
-			buffer[in] = arg1;
+			buffer[in] = mess;
 			in = (in + 1) % taille();
 			nbplein++;
-			observateur.depotMessage(arg0, arg1);
-			LOGGER.info("PROD : " + arg1.toString());
+			observateur.depotMessage(prod, mess);
+			LOGGER.info("PROD : " + mess.toString());
 		}
 		this.sCons.reveiller();
 	}
