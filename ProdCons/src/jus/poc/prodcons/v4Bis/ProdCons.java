@@ -8,10 +8,14 @@ import jus.poc.prodcons._Producteur;
 
 public class ProdCons implements Tampon {
 
+	/** Index d'écriture dans le buffer, pour les écritures. */
 	int in = 0;
+	/** Index de sortie du buffer, pour les récupérations. */
 	int out = 0;
+	/** Nombre de message actuellement dans le buffer */
 	int nbplein = 0;
 
+	/** Le buffer contenant les messages. */
 	Message[] buffer = null;
 
 	Semaphore sProd = null;
@@ -21,6 +25,16 @@ public class ProdCons implements Tampon {
 
 	private Semaphore[] tProdAtt = null;
 
+	/**
+	 * @param Taille
+	 *            Taille du buffer pour stocker les messages.
+	 * 
+	 * @param obs
+	 *            L'observateur de la classe
+	 * 
+	 * @param nbProd
+	 *            Le nombre de producteur présent.
+	 */
 	public ProdCons(int Taille, Observateur obs, int nbProd) {
 		buffer = new Message[Taille];
 		this.sProd = new Semaphore(Taille);
@@ -38,6 +52,12 @@ public class ProdCons implements Tampon {
 		return nbplein;
 	}
 
+	/**
+	 * @param conso
+	 *            Le consommateur récupérant le message.
+	 * 
+	 * @return Le message récupéré.
+	 */
 	@Override
 	public Message get(_Consommateur conso) throws Exception,
 			InterruptedException {
@@ -63,6 +83,13 @@ public class ProdCons implements Tampon {
 		return r;
 	}
 
+	/**
+	 * @param prod
+	 *            Le producteur déposant le message.
+	 * 
+	 * @param messs
+	 *            Le message déposé.
+	 */
 	@Override
 	public void put(_Producteur prod, Message mess) throws Exception,
 			InterruptedException {

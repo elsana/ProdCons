@@ -12,13 +12,31 @@ import jus.poc.prodcons.v1.TestProdCons;
 
 public class Consommateur extends Acteur implements _Consommateur {
 
+	/** Nombre de message lu par le consommateur */
 	private int nbMessConso = 0;
+	/** ProdCons utilisé par le consommateur pour lire les messages */
 	private ProdCons pc;
 
-	/* Logger utilise pour l'affichage de debug */
+	/** Logger utilise pour l'affichage de debug */
 	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
 			.getName());
 
+	/**
+	 * @param observateur
+	 *            L'obsevateur de la classe
+	 * 
+	 * @param moyenneTempsDeTraitement
+	 *            Durée moyenne que le consommateur va mettre à consommer le
+	 *            message.
+	 * 
+	 * @param deviationTempsDeTraitement
+	 *            Déviation du temps moyen du temps de consommation
+	 * 
+	 * @param pc
+	 *            Le ProdCons dans lequel le consommateur va lire les messages.
+	 * 
+	 * @throws ControlException
+	 */
 	protected Consommateur(Observateur observateur,
 			int moyenneTempsDeTraitement, int deviationTempsDeTraitement,
 			ProdCons pc, int nombreMoyenNbExemplaire,
@@ -28,16 +46,29 @@ public class Consommateur extends Acteur implements _Consommateur {
 		this.pc = pc;
 	}
 
+	/**
+	 * Execution d'un Thread consommateur. Un consommateur récupère des messages
+	 * dans ProdCons tant qu'il le peut et simule un traitement sur ceux-ci. Le
+	 * traitement est simulé par un appel à sleep() avec un temps tiré
+	 * aléatoirement à l'aide de moyenneTempsDeTraitement et
+	 * deviationTempsDeTraitement.
+	 */
 	@Override
 	public void run() {
 		int tAlea = new Aleatoire(moyenneTempsDeTraitement,
 				deviationTempsDeTraitement).next();
 		Message m = null;
 		while (true) {
-			// Msg retiré du tampon
+
+			/* Msg retiré du tampon */
 			try {
+				/* On récupère un message dans ProdCons */
 				m = this.pc.get(this);
 				this.nbMessConso++;
+				/*
+				 * On appel la méthode de vérification du controleur pour cette
+				 * étape
+				 */
 				observateur.consommationMessage(this, m, tAlea);
 				LOGGER.info("Message consommé par " + identification() + ": \n"
 						+ m);
@@ -50,8 +81,6 @@ public class Consommateur extends Acteur implements _Consommateur {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			// this.nbMess--;
 		}
 	}
 

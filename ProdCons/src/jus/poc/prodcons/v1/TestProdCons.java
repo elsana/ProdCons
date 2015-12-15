@@ -59,8 +59,7 @@ public class TestProdCons extends Simulateur {
 
 			for (int i = 0; i < prods.length; i++) {
 				prods[i] = new Producteur(observateur, tempsMoyenProduction,
-						deviationTempsMoyenProduction, nombreMoyenDeProduction,
-						deviationNombreMoyenDeProduction, pc);// Creation prods
+						deviationTempsMoyenProduction, pc);// Creation prods
 				prods[i].start();
 			}
 

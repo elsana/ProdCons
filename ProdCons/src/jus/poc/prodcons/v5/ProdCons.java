@@ -14,10 +14,14 @@ import jus.poc.prodcons.v4.TestProdCons;
 
 public class ProdCons implements Tampon {
 
+	/* Index d'écriture dans le buffer, pour les écritures. */
 	int in = 0;
+	/* Index de sortie du buffer, pour les récupérations. */
 	int out = 0;
+	/* Nombre de message actuellement dans le buffer */
 	int nbplein = 0;
 
+	/* Le buffer contenant les messages. */
 	Message[] buffer = null;
 
 	private final Lock myLock = new ReentrantLock();
@@ -31,6 +35,11 @@ public class ProdCons implements Tampon {
 	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
 			.getName());
 
+	/*
+	 * @param Taille Taille du buffer pour stocker les messages.
+	 * 
+	 * @param obs L'observateur de la classe
+	 */
 	public ProdCons(int Taille, Observateur obs) {
 		buffer = new Message[Taille];
 		this.observateur = obs;
@@ -41,8 +50,13 @@ public class ProdCons implements Tampon {
 		return nbplein;
 	}
 
+	/*
+	 * @param conso Le consommateur récupérant le message.
+	 * 
+	 * @return Le message récupéré.
+	 */
 	@Override
-	public Message get(_Consommateur arg0) throws Exception,
+	public Message get(_Consommateur conso) throws Exception,
 			InterruptedException {
 		this.myLock.lock();
 		try {
@@ -53,11 +67,12 @@ public class ProdCons implements Tampon {
 			}
 
 			r = buffer[out];
-			LOGGER.info("CONSO " + arg0.identification() + " : " + r.toString());
+			LOGGER.info("CONSO " + conso.identification() + " : "
+					+ r.toString());
 
 			out = (out + 1) % taille();
 			nbplein--;
-			observateur.retraitMessage(arg0, r);
+			observateur.retraitMessage(conso, r);
 
 			this.bFull.signal();
 			return r;
@@ -66,19 +81,24 @@ public class ProdCons implements Tampon {
 		}
 	}
 
+	/*
+	 * @param prod Le producteur déposant le message.
+	 * 
+	 * @param messs Le message déposé.
+	 */
 	@Override
-	public void put(_Producteur arg0, Message arg1) throws Exception,
+	public void put(_Producteur prod, Message mess) throws Exception,
 			InterruptedException {
 		this.myLock.lock();
 		try {
 			while (nbplein >= taille()) {
 				this.bFull.await();
 			}
-			buffer[in] = arg1;
+			buffer[in] = mess;
 			in = (in + 1) % taille();
 			nbplein++;
-			observateur.depotMessage(arg0, arg1);
-			LOGGER.info("PROD : " + arg1.toString());
+			observateur.depotMessage(prod, mess);
+			LOGGER.info("PROD : " + mess.toString());
 
 			this.bEmpty.signal();
 		} finally {

@@ -11,24 +11,43 @@ import jus.poc.prodcons._Producteur;
 
 public class Producteur extends Acteur implements _Producteur {
 
+	/** Nombre de message que le producteur doit produire. */
 	private int nbMess = 0;
+	/** ProdCons utilisé pour le dépot des messages */
 	private ProdCons pc;
 
-	/* Logger utilise pour l'affichage de debug */
+	/** Logger utilise pour l'affichage de debug */
 	private final static Logger LOGGER = Logger.getLogger(TestProdCons.class
 			.getName());
 
+	/**
+	 * @param observateur
+	 *            L'observateur de la classe.
+	 * 
+	 * @param moyenneTempsDeTraitement
+	 *            Temps moyen pour produire le message.
+	 * 
+	 * @param deviationTempsDeTraitement
+	 *            Déviation de temps pour produire le message.
+	 * 
+	 * @param pc
+	 *            Le ProdCons utilisé pour poser les messages.
+	 */
 	protected Producteur(Observateur observateur, int moyenneTempsDeTraitement,
-			int deviationTempsDeTraitement, int nombreMoyenNbExemplaire,
-			int deviationNombreMoyenNbExemplaire, ProdCons pc)
+			int deviationTempsDeTraitement, ProdCons pc)
 			throws ControlException {
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement,
 				deviationTempsDeTraitement);
-		this.nbMess = new Aleatoire(nombreMoyenNbExemplaire,
-				deviationNombreMoyenNbExemplaire).next();
 		this.pc = pc;
 	}
 
+	/**
+	 * Execution d'un Thread Producteur. Un producteur va produire NbMessages
+	 * dans ProdCons après avoir effectuer un traitement sur ces messages. Le
+	 * traitement est simulé par un appel à Thread.sleep() avec une durée
+	 * aléatoire générée par moyenneTempsDeTraitement et
+	 * deviationTempsDeTraitement.
+	 */
 	@Override
 	public void run() {
 		int messNum = 1;
